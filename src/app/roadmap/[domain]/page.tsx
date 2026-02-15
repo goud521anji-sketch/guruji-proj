@@ -139,7 +139,7 @@ export default function RoadmapPage() {
                                                             <div
                                                                 key={topic.id}
                                                                 className="flex items-start gap-3 p-2 rounded hover:bg-slate-900/50 transition-colors cursor-pointer group/topic"
-                                                                onClick={() => toggleTopicCompletion(monthPlan.month - 1, modIdx, topic.id)}
+                                                                onClick={() => toggleTopicCompletion(topic.id)}
                                                             >
                                                                 <div className={cn(
                                                                     "mt-0.5 transition-colors",
