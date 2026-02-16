@@ -1,7 +1,7 @@
 "use client";
 
 import { useOnboarding } from "@/context/OnboardingContext";
-
+import { useRoadmap } from "@/context/RoadmapContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,7 @@ export default function OnboardingPage() {
     });
 
     const { completeOnboarding } = useOnboarding();
+    const { generateUserRoadmap } = useRoadmap();
 
     const finishOnboarding = () => {
         console.log("Finishing at step:", currentStep);
@@ -73,8 +74,25 @@ export default function OnboardingPage() {
             localStorage.setItem("isOnboarded", "true");
             if (formData.selectedSubject) {
                 localStorage.setItem("selectedSubject", formData.selectedSubject);
-                // Keep userGoal for backward compatibility if needed, but prefer selectedSubject
+                // Keep userGoal for backward compatibility
                 localStorage.setItem("userGoal", formData.selectedSubject);
+
+                // Parse Inputs
+                const monthsMap: Record<string, number> = {
+                    "1 Month": 1, "3 Months": 3, "6 Months": 6, "1 Year": 12
+                };
+                const totalMonths = monthsMap[formData.goalTimeline] || 6;
+
+                // Capitalize Skill Level properly
+                const skillLevel = (formData.currentSkillLevel.charAt(0).toUpperCase() + formData.currentSkillLevel.slice(1)) as "Beginner" | "Intermediate" | "Advanced";
+
+                // Generate Roadmap
+                generateUserRoadmap(
+                    formData.selectedSubject,
+                    formData.dailyLearningTime,
+                    totalMonths,
+                    skillLevel
+                );
             }
             completeOnboarding();
             router.push("/dashboard");
